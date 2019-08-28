@@ -19,10 +19,15 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_login, container, false)
+        return inflater.inflate(R.layout.fragment_login, container, false)
+    }
 
-        // Get a reference to the loginButton
-        val loginButton = view.findViewById<Button>(R.id.loginButton)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Get a reference to the loginButton. Done automagically with kotlin extension
+        //val loginButton = view.findViewById<Button>(R.id.loginButton)
 
         // We can set the onClickListener that's returned from the createNavigateOnClickListener method
         //loginButton.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_login_to_home, null));
@@ -41,12 +46,8 @@ class LoginFragment : Fragment() {
                 it.findNavController().navigate(action)
             }
             else
-                // Displays a toast when we can't login
+            // Displays a toast when we can't login
                 Toast.makeText(it.context, "Invalid credentials", Toast.LENGTH_LONG).show()
         }
-
-        return view
     }
-
-
 }
