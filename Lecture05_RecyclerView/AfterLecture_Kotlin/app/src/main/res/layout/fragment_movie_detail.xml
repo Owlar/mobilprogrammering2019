@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".MovieDetailFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/movieTitleTextView"
         android:layout_width="0dp"

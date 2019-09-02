@@ -23,7 +23,7 @@ class MovieAdapter(private val items: ArrayList<Movie>, var clickListener: View.
         Log.d("MovieAdapter", "Creating View")
 
         // Inflates the movie_list_item.xml to a view for us
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.movie_list_item, parent)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.movie_list_item, parent, false)
 
         // Create the viewholder with the corresponding view (list item)
         return MovieViewHolder(itemView)

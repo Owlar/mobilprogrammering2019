@@ -19,7 +19,7 @@ import no.hiof.larseknu.playingwithrecyclerview.adapter.MovieAdapter
 import no.hiof.larseknu.playingwithrecyclerview.model.Movie
 
 class MovieListFragment : Fragment() {
-    var movieList : ArrayList<Movie> = Movie.getMovies()
+    private var movieList : ArrayList<Movie> = Movie.getMovies()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
