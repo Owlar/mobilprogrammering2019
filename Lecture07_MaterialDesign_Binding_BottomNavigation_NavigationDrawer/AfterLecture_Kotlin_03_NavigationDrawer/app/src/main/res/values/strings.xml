@@ -26,4 +26,5 @@
     <string name="watchlist">Watchlist</string>
     <string name="movie_poster">Movie Poster</string>
     <string name="collection">Collection</string>
+    <string name="home">Home</string>
 </resources>
