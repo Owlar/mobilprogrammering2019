@@ -42,7 +42,7 @@ class CountFragment : Fragment() {
             counter = savedInstanceState.getInt(COUNT_ID)
         }
 
-        // Set the counter and increment in
+        // Set the counter and increment databinding
         binding.counter = counter
         binding.increment = increment
 
