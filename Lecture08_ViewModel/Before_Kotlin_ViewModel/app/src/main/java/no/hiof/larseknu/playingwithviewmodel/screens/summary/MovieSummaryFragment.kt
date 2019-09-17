@@ -19,14 +19,6 @@ import no.hiof.larseknu.playingwithviewmodel.model.Movie
  * A simple [Fragment] subclass.
  */
 class MovieSummaryFragment : Fragment() {
-    private lateinit var currentMovie : Movie
-
-    private var numberAnswered = 0
-    private var numberSeen = 0
-
-    private lateinit var movieList : MutableList<Movie>
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
