@@ -26,8 +26,10 @@ import java.util.Locale
 
 class Worker(private val context: Context) {
 
-
-
+    /**
+     * Uses the LocationManager to get the last known location
+     * Since we use the LocationManager, we need permission to access the users location
+     */
     fun retrieveLocation() : Location {
         var lastLocation: Location? = null
 
@@ -45,19 +47,107 @@ class Worker(private val context: Context) {
         return lastLocation!!
     }
 
-
+    /**
+     * Gets one address from a specific location
+     * If no address is found, HIØ location is returned
+     */
     fun reverseGeocode(location: Location) : String {
         val geocoder = Geocoder(context)
+        var addressList : MutableList<Address>? = null
 
-        val addressList = geocoder.getFromLocation(location.latitude, location.longitude, 5)
-
+        try {
+            addressList = geocoder.getFromLocation(location.latitude, location.longitude, 5)
+        }
+        catch (e : IOException) {
+            Log.e("Worker.reverseGeocode", "IOException Error")
+        }
         addDelay()
 
         return if (addressList.isNullOrEmpty()) {
-            addressList[0].toString()
-        } else {
             "B.R.A. veien 4, 1757 Halden"
+        } else {
+            addressList[0].getAddressLine(0)
         }
+    }
+
+    /**
+     * Gets JSON from a specific URL
+     * @param urlString The URL that points to a JSON-object
+     * @return The JSON object retreived from the URL
+     */
+    fun getJSONObjectFromURL(urlString: String): JSONObject {
+
+        try {
+            val url = URL(urlString)
+
+            val urlConnection = url.openConnection() as HttpURLConnection
+
+            urlConnection.requestMethod = "GET"
+            urlConnection.connect()
+
+            val br = BufferedReader(InputStreamReader(url.openStream()))
+
+            val sb = StringBuilder()
+
+            for (line in br.readLine())
+                sb.append(line)
+
+            br.close()
+            urlConnection.disconnect()
+
+            val jsonString = sb.toString()
+
+            addDelay()
+
+            return JSONObject(jsonString)
+        } catch (jsone: JSONException) {
+            Log.e("Worker.getJSON", jsone.message)
+        } catch (ioe: IOException) {
+            Log.e("Worker.getJSON", ioe.message)
+        }
+
+        addDelay()
+        return JSONObject()
+
+    }
+
+    /**
+     * Appends the information given by the parameters to a file in the downloads directory
+     *
+     * @param location The location to save to the file
+     * @param address The address to save to the file
+     * @param movietitle The movietitle to save to the file
+     * @param fileName The filename we're going to use to save to
+     */
+    fun saveToFile(location: Location, address: String, movietitle: String, fileName: String) {
+        try {
+            val targetDir =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            if (!targetDir.exists())
+                targetDir.mkdirs()
+
+            val outFile = File(targetDir, fileName)
+            val fileWriter = FileWriter(outFile, true)
+            val writer = BufferedWriter(fileWriter)
+
+            val outLine = String.format(
+                Locale.getDefault(), "%s - %f/%f\n",
+                SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).format(location.time),
+                location.latitude,
+                location.longitude
+            )
+            writer.write(outLine)
+            writer.write(address + "\n")
+            writer.write(movietitle + "\n\n")
+
+            writer.flush()
+            writer.close()
+            fileWriter.close()
+        } catch (ex: Exception) {
+            Log.e("Worker.saveToFile", ex.message)
+        }
+
+        addDelay()
     }
 
     private fun addDelay() {
