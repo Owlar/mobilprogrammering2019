@@ -12,8 +12,7 @@ import java.util.*
 
 class MyBoundService : Service() {
     private val myLocalBinder = MyLocalBinder()
-
-    private lateinit var currentLocation: Location
+    private var currentLocation: Location = createLocationManually()
 
     private lateinit var worker: Worker
 
@@ -21,7 +20,6 @@ class MyBoundService : Service() {
         super.onCreate()
         worker = Worker(this)
         worker.monitorGpsInBackground(MyLocationListener())
-        currentLocation = createLocationManually()
     }
 
     override fun onDestroy() {
@@ -30,8 +28,7 @@ class MyBoundService : Service() {
     }
 
     inner class MyLocalBinder : Binder() {
-        val service: MyBoundService
-            get() = this@MyBoundService
+        fun getService() : MyBoundService = this@MyBoundService
     }
 
     override fun onBind(intent: Intent): IBinder? {

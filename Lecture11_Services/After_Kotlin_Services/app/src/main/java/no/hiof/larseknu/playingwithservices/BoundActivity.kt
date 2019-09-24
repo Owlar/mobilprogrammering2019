@@ -13,13 +13,13 @@ import no.hiof.larseknu.playingwithservices.service.MyBoundService
 class BoundActivity : AppCompatActivity() {
 
     private var isBound = false
-    private var myBoundService: MyBoundService? = null
+    private lateinit var myBoundService: MyBoundService
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(componentName: ComponentName, iBinder: IBinder) {
             val myLocalBinder = iBinder as MyBoundService.MyLocalBinder
 
-            myBoundService = myLocalBinder.service
+            myBoundService = myLocalBinder.getService()
             isBound = true
         }
 
@@ -43,13 +43,14 @@ class BoundActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         unbindService(connection)
+        isBound = false
     }
 
     fun getLocation(view: View) {
         if (isBound) {
-            val location = myBoundService?.getCurrentLocation()
-            if (location != null)
-                locationTextView.text = "Lon: " + location!!.getLongitude() + "\nLat: " + location!!.getLatitude()
+            val location = myBoundService.getCurrentLocation()
+
+            locationTextView.text = "Lon: " + location.longitude + "\nLat: " + location.latitude
         }
     }
 }
