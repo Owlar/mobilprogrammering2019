@@ -58,4 +58,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
+    <Button
+        android:id="@+id/saveWorker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:onClick="doWorkManagerWork"
+        android:text="SaveAddressWorker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/startServiceButton" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

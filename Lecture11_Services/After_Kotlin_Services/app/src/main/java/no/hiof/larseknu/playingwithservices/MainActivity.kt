@@ -3,13 +3,19 @@ package no.hiof.larseknu.playingwithservices
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.work.Constraints
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import no.hiof.larseknu.playingwithservices.service.ACTION_RETREIVE_AND_SAVE_ADDRESS
 import no.hiof.larseknu.playingwithservices.service.EXTRA_FILENAME
 import no.hiof.larseknu.playingwithservices.service.MyIntentService
 import no.hiof.larseknu.playingwithservices.service.MyStartedService
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,6 +37,24 @@ class MainActivity : AppCompatActivity() {
         intent.action = ACTION_RETREIVE_AND_SAVE_ADDRESS
         intent.putExtra(EXTRA_FILENAME, "MyIntentService.txt")
         startService(intent)
+    }
+
+    fun doWorkManagerWork(view: View) {
+        val constraints = Constraints.Builder()
+            .setRequiresCharging(true)
+            .build()
+
+        val fileName = workDataOf(WORKER_FILENAME to "MyWorker.txt")
+
+        val saveFileWorkRequest = OneTimeWorkRequestBuilder<MyWorker>()
+            .setInitialDelay(5, TimeUnit.SECONDS)
+            .setInputData(fileName)
+            .setConstraints(constraints)
+            .build()
+
+        WorkManager.getInstance(this).enqueue(saveFileWorkRequest)
+
+        Log.i("MainActivity", "MyWorker - Called")
     }
 
     override fun onDestroy() {
