@@ -11,7 +11,7 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import no.hiof.larseknu.playingwithservices.Worker;
+import no.hiof.larseknu.playingwithservices.LocationWorker;
 
 
 public class MyIntentService extends IntentService {
@@ -52,19 +52,19 @@ public class MyIntentService extends IntentService {
 
     private void handleActionSaveAddress(String fileName, ResultReceiver resultReceiver) {
         try {
-            Worker worker = new Worker(getApplicationContext());
-            Log.d(LOGTAG, "Worker Started");
+            LocationWorker locationWorker = new LocationWorker(getApplicationContext());
+            Log.d(LOGTAG, "LocationWorker Started");
 
-            Location location = worker.getLocation();
+            Location location = locationWorker.getLocation();
             Log.d(LOGTAG, "Got location");
 
-            String address = worker.reverseGeocode(location);
+            String address = locationWorker.reverseGeocode(location);
             Log.d(LOGTAG, "Got address");
 
-            JSONObject json = worker.getJSONObjectFromURL("http://www.omdbapi.com/?i=tt3896198&apikey=2f6990a0");
+            JSONObject json = locationWorker.getJSONObjectFromURL("http://www.omdbapi.com/?i=tt3896198&apikey=2f6990a0");
             Log.d(LOGTAG, "Got JSON");
 
-            worker.saveToFile(location, address, json.getString("Title"), fileName);
+            locationWorker.saveToFile(location, address, json.getString("Title"), fileName);
             Log.d(LOGTAG, "Saved file");
 
             Log.d(LOGTAG, "MyIntentService Done");

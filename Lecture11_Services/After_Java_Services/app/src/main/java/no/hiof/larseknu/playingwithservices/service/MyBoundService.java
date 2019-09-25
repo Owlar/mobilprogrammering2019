@@ -7,23 +7,22 @@ import android.location.LocationListener;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 
 import java.util.Date;
 
-import no.hiof.larseknu.playingwithservices.Worker;
+import no.hiof.larseknu.playingwithservices.LocationWorker;
 
 public class MyBoundService extends Service {
     private MyLocalBinder myLocalBinder = new MyLocalBinder();
 
     private Location currentLocation;
-    private Worker worker;
+    private LocationWorker locationWorker;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        worker = new Worker(this);
-        worker.monitorGpsInBackground(new MyLocationListener());
+        locationWorker = new LocationWorker(this);
+        locationWorker.monitorGpsInBackground(new MyLocationListener());
         currentLocation = createLocationManually();
     }
 
@@ -35,7 +34,7 @@ public class MyBoundService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        worker.stopGpsMonitoring();
+        locationWorker.stopGpsMonitoring();
     }
 
     public class MyLocalBinder extends Binder {

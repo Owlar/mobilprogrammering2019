@@ -9,7 +9,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.HandlerThread;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -28,11 +27,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class Worker {
+public class LocationWorker {
     private Context context;
     private static boolean useGpsToGetLocation = true;
 
-    public Worker(Context context) {
+    public LocationWorker(Context context) {
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         this.context = context;
     }
@@ -105,10 +104,10 @@ public class Worker {
             }
         }
         catch (IOException ex) {
-            Log.e("Worker.reverseGeocode", "IOException Error " + ex.getMessage());
+            Log.e("LocationWorker.reverse", "IOException Error " + ex.getMessage());
         }
         catch (Exception ex) {
-            Log.e("Worker.reverseGeocode", "Error " + ex.getMessage());
+            Log.e("LocationWorker.reverse", "Error " + ex.getMessage());
         }
 
         addDelay();
@@ -138,7 +137,7 @@ public class Worker {
             fileWriter.close();
         }
         catch (Exception ex){
-            Log.e("Worker.saveToFile", ex.getMessage());
+            Log.e("LocationWorker.save", ex.getMessage());
         }
 
         addDelay();
@@ -174,7 +173,7 @@ public class Worker {
             Log.e("Worket.getJSON", jsone.getMessage());
         }
         catch (IOException ioe) {
-            Log.e("Worker.getJSON", ioe.getMessage());
+            Log.e("LocationWorker.getJSON", ioe.getMessage());
         }
 
         addDelay();

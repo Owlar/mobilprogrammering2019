@@ -4,15 +4,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+
+import java.util.concurrent.TimeUnit;
+
 import no.hiof.larseknu.playingwithservices.service.MyIntentService;
 import no.hiof.larseknu.playingwithservices.service.MyStartedService;
+
+import static no.hiof.larseknu.playingwithservices.MyWorker.WORKER_FILENAME;
 
 public class MainActivity extends AppCompatActivity {
     private TextView resultTextView;
@@ -31,6 +40,24 @@ public class MainActivity extends AppCompatActivity {
 
     public void stopStartedService(View view) {
         stopService(new Intent(this, MyStartedService.class));
+    }
+
+    public void scheduleJob(View view) {
+        Constraints constraints = new Constraints.Builder()
+                .setRequiresCharging(true)
+                .build();
+
+        Data fileName = new Data.Builder().putString(WORKER_FILENAME, "MyWorker.txt").build();
+
+        OneTimeWorkRequest saveFileWorkRequest = new OneTimeWorkRequest.Builder(MyWorker.class)
+                .setInitialDelay(5, TimeUnit.SECONDS)
+                .setInputData(fileName)
+                .setConstraints(constraints)
+                .build();
+
+        WorkManager.getInstance(this).enqueue(saveFileWorkRequest);
+
+        Log.i("MainActivity", "MyWorker - Called");
     }
 
     @Override

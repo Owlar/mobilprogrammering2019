@@ -9,19 +9,17 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import no.hiof.larseknu.playingwithservices.R;
-import no.hiof.larseknu.playingwithservices.Worker;
+import no.hiof.larseknu.playingwithservices.LocationWorker;
 
 public class MyStartedService extends Service {
     private static final String LOGTAG = "MyStartedService";
 
-    private Worker worker;
+    private LocationWorker locationWorker;
 
     private ExecutorService executorService;
     private ScheduledExecutorService scheduledExecutorService;
@@ -30,8 +28,8 @@ public class MyStartedService extends Service {
     public void onCreate() {
         Log.i(LOGTAG, "MyStartedService.onCreate Thread: " + Thread.currentThread().getName());
 
-        worker = new Worker(this);
-        worker.monitorGpsInBackground();
+        locationWorker = new LocationWorker(this);
+        locationWorker.monitorGpsInBackground();
 
         executorService = Executors.newFixedThreadPool(3);
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
@@ -52,7 +50,7 @@ public class MyStartedService extends Service {
     @Override
     public void onDestroy() {
         Log.i(LOGTAG, "MyStartedService.onDestroy Thread: " + Thread.currentThread().getName());
-        worker.stopGpsMonitoring();
+        locationWorker.stopGpsMonitoring();
     }
 
     private class ServiceRunnable implements Runnable {
@@ -66,13 +64,13 @@ public class MyStartedService extends Service {
         public void run() {
             Log.i(LOGTAG, "MyStartedService.ServiceRunnable Thread: " + Thread.currentThread().getName());
             try {
-                Location location = worker.getLocation();
+                Location location = locationWorker.getLocation();
 
-                String address = worker.reverseGeocode(location);
+                String address = locationWorker.reverseGeocode(location);
 
-                JSONObject jsonObject = worker.getJSONObjectFromURL("http://www.omdbapi.com/?i=tt3896198&apikey=2f6990a0");
+                JSONObject jsonObject = locationWorker.getJSONObjectFromURL("http://www.omdbapi.com/?i=tt3896198&apikey=2f6990a0");
 
-                worker.saveToFile(location, address, jsonObject.getString("Title"), "MyStartedService.txt");
+                locationWorker.saveToFile(location, address, jsonObject.getString("Title"), "MyStartedService.txt");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
