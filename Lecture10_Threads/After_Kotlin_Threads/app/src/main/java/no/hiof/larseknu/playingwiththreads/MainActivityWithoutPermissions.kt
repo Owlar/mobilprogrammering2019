@@ -3,6 +3,7 @@ package no.hiof.larseknu.playingwiththreads
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.StrictMode
 import android.util.Log
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
@@ -13,6 +14,8 @@ class MainActivityWithoutPermissions : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        StrictMode.enableDefaults()
     }
 
     fun doWorkThreadless(view: View) {
@@ -30,15 +33,7 @@ class MainActivityWithoutPermissions : AppCompatActivity() {
         //statusText.text = "Retrieved JSON"
 
         //worker.saveToFile(location, address, json.getString("Title"), "NonThreadFile.txt")
-        worker.saveToFile(location, address, "MovieTitle", "NonThreadFile.txt")
-
-
-        worker.saveToFile(
-            location,
-            address, /*jsonObject.getString("Title")*/
-            "Movietitle",
-            "NonThreadFile.txt"
-        )
+        //worker.saveToFile(location, address, "MovieTitle", "NonThreadFile.txt")
 
         statusText.text = "Done"
     }
